@@ -109,6 +109,11 @@ display to 4K, portrait and landscape, with no breakpoints.
 
 ## Deploy
 
-Push to **`master`** → `.github/workflows/deploy-pages.yml` builds and publishes
-to Pages. PRs run `ci.yml` (typecheck + lint + test + build). Action versions are
-SHA-pinned.
+Deploys are **tag-driven**, not branch-driven: pushing a CalVer tag (`YYYY.N`)
+runs `.github/workflows/deploy-pages.yml`, which builds and publishes to Pages.
+It also accepts `workflow_dispatch`. Pushing to `master` alone does nothing —
+cut a tag. PRs run `ci.yml` (typecheck + lint + test + build). Action versions
+are SHA-pinned.
+
+(The sibling apps' READMEs claim master-push deploys; that is stale — their
+workflows are tag-triggered too.)
