@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <!-- The degraded-mode gate (sets html.legacy on old/weak signage players) is
+         NOT inline here: the build injects it before the stylesheet from
+         @screenly-labs/signage-kit. That's why the html.legacy CSS rules exist
+         with no matching inline script in this source. -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-60S74VCHL8"></script>
+    <script>
+      window.dataLayer = window.dataLayer || []
+      function gtag() {
+        dataLayer.push(arguments)
+      }
+      gtag('js', new Date())
+      gtag('config', 'G-60S74VCHL8')
+    </script>
+    <title>Menu Board</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="A full-screen menu board for cafes, bars and small kitchens: sections, prices and descriptions, laid out for any screen."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect x='5' y='4' width='22' height='24' rx='2' fill='none' stroke='%23e8dcc8' stroke-width='2.5'/%3E%3Cpath d='M10 12h8M10 17h12M10 22h6' stroke='%23e0a038' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E"
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/fraunces-latin-standard-normal.woff2?v=__ASSET_VERSION__"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/hanken-grotesk-latin-wght-normal.woff2?v=__ASSET_VERSION__"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="/static/fonts/space-mono-latin-400-normal.woff2?v=__ASSET_VERSION__"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link rel="stylesheet" href="/static/styles/main.css?v=__ASSET_VERSION__" />
+    <script src="/static/js/main.js?v=__ASSET_VERSION__" defer></script>
+  </head>
+  <body>
+    <main class="stage">
+      <article class="board" aria-labelledby="board-title">
+        <header class="board__head">
+          <h1 class="board__title" id="board-title">Corner Coffee</h1>
+          <p class="board__subtitle" id="board-subtitle">Roasted on Bermondsey Street</p>
+        </header>
+
+        <div class="board__body" id="board-body" style="--columns: 2">
+          <!-- Sections are (re)rendered by JS from the query string; this static
+               worked example keeps the board legible pre-JS and in the store
+               preview. Kept in step with EXAMPLE in main.ts. -->
+          <section class="course">
+            <h2 class="course__title">Coffee</h2>
+            <dl class="items">
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Espresso</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£2.60</dd>
+                </div>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Flat White</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£3.40</dd>
+                </div>
+                <dd class="item__desc">Our house blend, silky and sweet</dd>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Filter</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£3.00</dd>
+                </div>
+                <dd class="item__desc">Rotating single origin</dd>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Mocha</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£3.80</dd>
+                </div>
+              </div>
+            </dl>
+          </section>
+
+          <section class="course">
+            <h2 class="course__title">Pastries</h2>
+            <dl class="items">
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Almond Croissant</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£3.20</dd>
+                </div>
+                <dd class="item__desc">Baked here each morning</dd>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Cinnamon Bun</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£3.00</dd>
+                </div>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Sourdough Toast</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£2.80</dd>
+                </div>
+                <dd class="item__desc">With butter and jam</dd>
+              </div>
+            </dl>
+          </section>
+
+          <section class="course">
+            <h2 class="course__title">Lunch</h2>
+            <dl class="items">
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Soup of the Day</dt>
+                  <span class="item__leader"></span>
+                </div>
+                <dd class="item__desc">Ask at the counter</dd>
+              </div>
+              <div class="item">
+                <div class="item__head">
+                  <dt class="item__name">Toastie</dt>
+                  <span class="item__leader"></span>
+                  <dd class="item__price">£6.50</dd>
+                </div>
+                <dd class="item__desc">Cheddar, onion, mustard</dd>
+              </div>
+            </dl>
+          </section>
+        </div>
+
+        <p class="board__note" id="board-note">Oat milk at no extra charge</p>
+      </article>
+
+      <a
+        class="brand"
+        href="https://www.screenly.io"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Screenly (opens in a new tab)"
+      >
+        <img src="/static/images/screenly-logo.svg?v=__ASSET_VERSION__" alt="Screenly" />
+      </a>
+    </main>
+  </body>
+</html>

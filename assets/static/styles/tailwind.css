@@ -1,0 +1,265 @@
+/* =========================================================================
+   Screenly Menu Board — "Ticket board"
+   A priced menu for cafes, bars and small kitchens. The job is legibility from
+   across a room while someone queues, so the layout is a price list first and a
+   piece of branding second: names left, prices hard right in tabular mono, and
+   sections banded so the eye can jump straight to the part it wants.
+
+   The vernacular is enamel cafe signage and the paper ticket, not the
+   chalkboard — that cliche photographs well and reads badly at 3 metres. Hence
+   the warm near-black ground rather than slate, amber rather than chalk-white,
+   and Space Mono prices that line up like a till roll.
+
+   The signature is the section band: an amber rule the full width of the
+   column with the section name sitting on it. It is what makes the board
+   scannable, and it is deliberately not the dotted leader used by the sibling
+   Opening Hours app.
+
+   Tuned for unattended signage — no interaction, both orientations.
+   ========================================================================= */
+
+@import 'tailwindcss';
+/* Shared base (brand/font tokens + fluid root + the degraded-mode kill-switch)
+   and the canonical @font-face set + standardized footer badge, all from
+   @screenly-labs/signage-kit. The app's own @theme + component styles below
+   layer on top; the design identity stays here, per-app. */
+@import '@screenly-labs/signage-kit/styles/preset.css';
+@import '@screenly-labs/signage-kit/styles/fonts.css';
+@import '@screenly-labs/signage-kit/styles/brand.css';
+
+/* Design tokens — also generate utilities (bg-ink, text-amber…). --font-sans
+   (Hanken Grotesk) comes from the kit preset; --font-display overrides it to
+   Fraunces, and --font-price adds Space Mono for the price column. */
+@theme {
+  --color-ink: #17110d; /* roasted near-black, warm not blue */
+  --color-bone: #ece2d2; /* warm paper */
+  --color-amber: #e0a038; /* section bands, prices */
+  --color-ember: #c4642f; /* rare second accent: the footer note rule */
+  --font-display: 'Fraunces', ui-serif, Georgia, serif;
+  --font-price: 'Space Mono', ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  /* Tune the kit's fluid root (clamp of vw+vh) for this design. It's
+     orientation-neutral so portrait and landscape resolve to the same type
+     size, and children size in rem, so the board scales from the 800×480 Pi
+     panel to 4K with no breakpoints. Slightly smaller gain than a single-fact
+     app like Opening Hours, because a menu has far more lines to fit. */
+  :root {
+    --root-min: 13px;
+    --root-gain: 0.95;
+    --root-max: 56px;
+    --hair: rgb(236 226 210 / 0.14); /* leaders, dividers */
+    --dim: rgb(236 226 210 / 0.72); /* descriptions, subtitle */
+  }
+
+  body {
+    min-height: 100vh; /* fallback for engines below the svh floor (~2018 players) */
+    min-height: 100svh;
+    background-color: var(--color-ink);
+    color: var(--color-bone);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+}
+
+@layer components {
+  .stage {
+    display: grid;
+    place-items: center;
+    min-height: 100vh; /* fallback for engines below the svh floor (~2018 players) */
+    min-height: 100svh;
+    padding: clamp(1.25rem, 5vmin, 3.5rem);
+  }
+
+  .board {
+    width: min(94vw, 74rem);
+    display: flex;
+    flex-direction: column;
+    gap: 1.4rem;
+  }
+
+  /* ---- Masthead ---------------------------------------------------------- */
+  .board__head {
+    text-align: center;
+  }
+
+  .board__title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 2.1rem;
+    line-height: 1.05;
+    letter-spacing: -0.015em;
+    text-wrap: balance;
+  }
+
+  .board__subtitle {
+    margin: 0.3rem 0 0;
+    font-weight: 450;
+    font-size: 0.86rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--dim);
+  }
+  .board__subtitle[hidden] {
+    display: none;
+  }
+
+  /* ---- The menu body ----------------------------------------------------- */
+  /* Multi-column rather than grid: sections are variable height, and columns
+     let them flow and balance on their own. --columns is set by JS from the
+     line count (see columnCount in menu.ts), not from a media query, because a
+     six-line menu should stay in one column even on a 4K panel. */
+  .board__body {
+    columns: var(--columns, 1);
+    column-gap: 2.6rem;
+    /* A hairline between columns, the way a printed menu rules its panels. */
+    column-rule: 1px solid var(--hair);
+  }
+
+  .course {
+    /* Never split a section across a column break — a heading stranded at the
+       foot of a column is the one thing that makes a menu board unreadable. */
+    break-inside: avoid;
+    page-break-inside: avoid; /* older engines at the support floor */
+    margin: 0 0 1.5rem;
+  }
+
+  /* THE SIGNATURE: the section band. An amber rule the full width of the
+     column with the section name sitting on it, so the eye can jump to
+     "Pastries" from across the room without reading a single item. */
+  .course__title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.7rem;
+    font-family: var(--font-display);
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-size: 1.02rem;
+    letter-spacing: 0.02em;
+    color: var(--color-amber);
+  }
+  .course__title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background-color: var(--color-amber);
+    /* Softened at the tail so the band reads as a rule, not a underline. */
+    mask-image: linear-gradient(to right, #000 65%, transparent);
+    -webkit-mask-image: linear-gradient(to right, #000 65%, transparent);
+  }
+
+  .items {
+    margin: 0;
+  }
+
+  .item {
+    margin: 0 0 0.62rem;
+  }
+  .item:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Name — leader — price on one baseline. The leader is a faint hairline
+     rather than the printed-menu dot: it does the same job of tying the two
+     together without borrowing the sibling app's signature. */
+  .item__head {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+  }
+
+  .item__name {
+    margin: 0;
+    font-weight: 550;
+    font-size: 1.02rem;
+    line-height: 1.25;
+  }
+
+  .item__leader {
+    flex: 1;
+    height: 1px;
+    min-width: 1rem;
+    background-color: var(--hair);
+    /* Decorative: screen readers get name then price from the dl structure. */
+    align-self: center;
+  }
+
+  .item__price {
+    margin: 0;
+    font-family: var(--font-price);
+    font-size: 0.95rem;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    color: var(--color-amber);
+    white-space: nowrap;
+  }
+
+  .item__desc {
+    margin: 0.12rem 0 0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: var(--dim);
+    /* Keep a long description from crowding the price column. */
+    max-width: 34ch;
+  }
+
+  /* ---- Footer note ------------------------------------------------------- */
+  .board__note {
+    margin: 0;
+    padding-top: 0.9rem;
+    border-top: 1px solid var(--hair);
+    text-align: center;
+    font-size: 0.82rem;
+    letter-spacing: 0.02em;
+    color: var(--dim);
+    text-wrap: balance;
+  }
+  .board__note[hidden] {
+    display: none;
+  }
+  .board__note::before {
+    content: '';
+    display: block;
+    width: 1.6rem;
+    height: 2px;
+    margin: 0 auto 0.6rem;
+    background-color: var(--color-ember);
+  }
+}
+
+@layer base {
+  /* One orchestrated entrance, gated for reduced-motion. */
+  @media (prefers-reduced-motion: no-preference) {
+    .board {
+      animation: board-in 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    }
+  }
+
+  @keyframes board-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.5rem);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}

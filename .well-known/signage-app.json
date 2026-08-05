@@ -1,0 +1,72 @@
+{
+  "manifestVersion": "1",
+  "id": "menu-board",
+  "name": "Menu Board",
+  "description": "A full-screen menu board for cafes, bars and small kitchens. Group your items into sections, give them prices and an optional line of description, and the board lays itself out and scales to any screen. Everything lives in the settings, so one deployment serves every venue and changing a price takes seconds.",
+  "summary": "Your menu, priced and grouped, on any screen.",
+  "vendor": "Screenly",
+  "tags": ["Hospitality", "Retail", "Business", "Food"],
+  "homepage": "https://menu-board.srly.io/",
+  "source": "https://github.com/Screenly-Labs/menu-board",
+  "support": "https://github.com/Screenly-Labs/menu-board/issues",
+  "playback": { "pacing": "fixed" },
+  "settings": {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Board title",
+        "description": "Your venue, or what this board is for, e.g. Corner Coffee.",
+        "x-widget": "text"
+      },
+      "subtitle": {
+        "type": "string",
+        "title": "Subtitle",
+        "description": "Optional line under the title, e.g. Served all day.",
+        "x-widget": "text"
+      },
+      "currency": {
+        "type": "string",
+        "title": "Currency symbol",
+        "description": "Prefixed to prices you write as a bare number. A price you write in full, like $4 or Market price, is left as-is.",
+        "default": "",
+        "x-widget": "text"
+      },
+      "item": {
+        "type": "array",
+        "title": "Menu items",
+        "description": "Each line is one item. Items sharing a section are grouped together, and sections appear in the order you first use them.",
+        "items": {
+          "type": "object",
+          "x-format": "{section}|{name}|{price}|{description}",
+          "properties": {
+            "section": {
+              "type": "string",
+              "title": "Section",
+              "description": "e.g. Coffee, Pastries, Lunch. Leave blank for an ungrouped board."
+            },
+            "name": { "type": "string", "title": "Item" },
+            "price": {
+              "type": "string",
+              "title": "Price",
+              "description": "A bare number picks up your currency symbol. Anything else is printed exactly as written."
+            },
+            "description": { "type": "string", "title": "Description" }
+          },
+          "required": ["name"]
+        }
+      },
+      "note": {
+        "type": "string",
+        "title": "Footer note",
+        "description": "Optional line under the menu, e.g. Oat milk at no extra charge.",
+        "x-widget": "text"
+      }
+    }
+  },
+  "launch": {
+    "baseUrl": "https://menu-board.srly.io/",
+    "template": "{?name,subtitle,currency,item*,note}"
+  }
+}
