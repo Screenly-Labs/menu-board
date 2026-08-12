@@ -5,7 +5,9 @@
 // Side-effect import: installs the replaceChildren shim for the older-browser
 // degraded mode. Must stay first so the shim is in place before any render.
 import '@screenly-labs/signage-kit/polyfills'
+import { trackPlayer } from '@screenly-labs/signage-kit/analytics'
 import { removeScreenlyBranding } from '@screenly-labs/signage-kit/branding'
+import { detectPlayer } from '@screenly-labs/signage-kit/profiler'
 import { columnCount, type Menu, parseMenu } from './menu'
 
 // Shown when the page is opened with no settings (the store preview, or a bare
@@ -115,6 +117,19 @@ const render = (menu: Menu): void => {
 const init = (): void => {
   removeScreenlyBranding()
   const menu = parseMenu(window.location.search || `?${EXAMPLE}`)
+  // Report which player is showing this, and how big the board actually is. Overflow is
+  // this app's worst failure (see CLAUDE.md), and the fit is driven by the line count, so
+  // knowing the item counts real venues deploy is what tells us whether the example menu
+  // is representative or wishful. `configured` separates a real venue from a screen still
+  // showing the built-in example.
+  trackPlayer(detectPlayer(), {
+    app: 'menu-board',
+    config: {
+      configured: menu.configured ? 1 : 0,
+      section_count: menu.sections.length,
+      item_count: menu.sections.reduce((total, section) => total + section.items.length, 0)
+    }
+  })
   render(menu)
   // Signage panels get rotated in the field, so recompute the column count when
   // the viewport aspect changes. Nothing else here depends on time.
