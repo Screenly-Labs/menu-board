@@ -124,6 +124,7 @@ const init = (): void => {
   // showing the built-in example.
   trackPlayer(detectPlayer(), {
     app: 'menu-board',
+    sendPageView: true,
     config: {
       configured: menu.configured ? 1 : 0,
       section_count: menu.sections.length,
